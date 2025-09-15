@@ -571,14 +571,289 @@
             margin: 2rem 0;
         }
 
+        /* Navigation Sidebar */
+        .nav-sidebar {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            width: 280px;
+            max-height: calc(100vh - 4rem);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            padding: 1.5rem;
+            z-index: 999;
+            overflow-y: auto;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-sidebar.closed {
+            transform: translateX(-320px);
+        }
+
+        .nav-toggle {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .nav-toggle:hover {
+            background: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .nav-sidebar h3 {
+            margin: 0 0 1rem 0;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .nav-sidebar h3::before {
+            content: '🧭';
+            margin-right: 0.5rem;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: block;
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: var(--primary-light);
+            border-left-color: var(--primary-color);
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            border-left-color: var(--secondary-color);
+        }
+
+        .nav-link.section-1 { border-left-color: #ef4444; }
+        .nav-link.section-2 { border-left-color: #f59e0b; }
+        .nav-link.section-3 { border-left-color: #10b981; }
+        .nav-link.section-4 { border-left-color: #3b82f6; }
+        .nav-link.section-5 { border-left-color: #8b5cf6; }
+        .nav-link.section-6 { border-left-color: #06b6d4; }
+        .nav-link.section-7 { border-left-color: #ec4899; }
+
+        .nav-section-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 1rem 0;
+        }
+
+        .nav-progress {
+            width: 100%;
+            height: 4px;
+            background: var(--bg-light);
+            border-radius: 2px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .nav-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        /* Adjust main content for sidebar space - Always open on desktop */
+        body {
+            margin-left: 320px;
+        }
+
+        .container {
+            margin-left: 0;
+            max-width: calc(1200px - 320px);
+        }
+
+        @media (max-width: 1200px) {
+            /* Show toggle button and make sidebar collapsible on smaller desktop screens */
+            .nav-toggle {
+                display: flex;
+            }
+
+            .nav-sidebar {
+                transform: translateX(-320px);
+            }
+
+            .nav-sidebar.open {
+                transform: translateX(0);
+            }
+
+            body {
+                margin-left: 0;
+            }
+
+            .container {
+                max-width: 1000px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .nav-sidebar {
+                width: 260px;
+                left: 1rem;
+                top: 1rem;
+                max-height: calc(100vh - 2rem);
+                transform: translateX(-280px);
+            }
+
+            .nav-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .nav-toggle {
+                left: 1rem;
+                top: 1rem;
+                display: flex;
+            }
+
+            body {
+                margin-left: 0;
+            }
+
+            body.nav-open .container {
+                margin-left: 0;
+            }
+        }
+
         @media (max-width: 768px) {
             .comparison {
                 grid-template-columns: 1fr;
+            }
+
+            .nav-sidebar {
+                width: calc(100vw - 2rem);
+                left: 1rem;
+                right: 1rem;
+                width: auto;
+                transform: translateX(calc(-100vw));
+            }
+
+            .nav-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            body {
+                margin-left: 0;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation Toggle Button -->
+    <button class="nav-toggle" onclick="toggleNavigation()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Navigation Sidebar -->
+    <div class="nav-sidebar" id="navSidebar">
+        <h3>Course Navigation</h3>
+
+        <div class="nav-progress">
+            <div class="nav-progress-bar" id="progressBar"></div>
+        </div>
+
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="#overview" class="nav-link">📋 Course Overview</a>
+            </li>
+            <li class="nav-item">
+                <a href="#case-study" class="nav-link">🚀 Mars Orbiter Case Study</a>
+            </li>
+            <li class="nav-item">
+                <a href="#agenda" class="nav-link">📅 Course Agenda</a>
+            </li>
+            <li class="nav-item">
+                <a href="#seven-cs-overview" class="nav-link">🔷 Seven Cs Overview</a>
+            </li>
+
+            <div class="nav-section-divider"></div>
+
+            <li class="nav-item">
+                <a href="#clarity" class="nav-link section-1">👁️ 1. Clarity</a>
+            </li>
+            <li class="nav-item">
+                <a href="#conciseness" class="nav-link section-2">✂️ 2. Conciseness</a>
+            </li>
+            <li class="nav-item">
+                <a href="#concreteness" class="nav-link section-3">🎯 3. Concreteness</a>
+            </li>
+            <li class="nav-item">
+                <a href="#exercise" class="nav-link">📝 Exercise: Good vs Bad</a>
+            </li>
+            <li class="nav-item">
+                <a href="#coherence" class="nav-link section-4">🔗 4. Coherence</a>
+            </li>
+            <li class="nav-item">
+                <a href="#correctness" class="nav-link section-5">✅ 5. Correctness</a>
+            </li>
+            <li class="nav-item">
+                <a href="#completeness" class="nav-link section-6">📋 6. Completeness</a>
+            </li>
+            <li class="nav-item">
+                <a href="#courtesy" class="nav-link section-7">💝 7. Courtesy</a>
+            </li>
+
+            <div class="nav-section-divider"></div>
+
+            <li class="nav-item">
+                <a href="#improvement-plan" class="nav-link">📈 Improvement Plan</a>
+            </li>
+            <li class="nav-item">
+                <a href="#online-test" class="nav-link">🧪 Online Test</a>
+            </li>
+            <li class="nav-item">
+                <a href="#takeaways" class="nav-link">🎓 Final Takeaways</a>
+            </li>
+        </ul>
+    </div>
+
     <div class="container">
         <div class="hero">
             <div class="hero-content">
@@ -589,7 +864,7 @@
         </div>
 
         <div class="content">
-            <section class="section">
+            <section class="section" id="overview">
                 <h2>Course Overview and Objectives</h2>
 
                 <div class="quote">
@@ -607,7 +882,7 @@
                 </ul>
             </section>
 
-            <section class="section">
+            <section class="section" id="case-study">
                 <h2>Communication Crisis Case Study: The Mars Climate Orbiter</h2>
 
                 <div class="example-card" style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-color: #dc2626;">
@@ -647,7 +922,7 @@
                 </div>
             </section>
 
-            <div class="agenda">
+            <div class="agenda" id="agenda">
                 <h2>Agenda at a Glance</h2>
                 <ol>
                     <li><strong>Introduction & Objectives:</strong> Why communication matters in tech</li>
@@ -662,7 +937,7 @@
                 </ol>
             </div>
 
-            <section class="section">
+            <section class="section" id="seven-cs-overview">
                 <h2>Seven C's Overview</h2>
                 <p>The Seven C's framework is a checklist for effective communication, adapted specifically for tech industry contexts.</p>
 
@@ -704,7 +979,7 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section" id="clarity">
                 <h2>1. Clarity — Clear Communication</h2>
                 <p><strong>Definition:</strong> Clarity means your message is immediately and easily understood, with no ambiguity. You convey exactly what you mean. In practice, this means using common words (or defined technical terms), structuring sentences clearly, and ensuring context is provided.</p>
 
@@ -756,7 +1031,7 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section" id="conciseness">
                 <h2>2. Conciseness — Concise Communication</h2>
                 <p><strong>Definition:</strong> Concise communication is about keeping your message brief and to the point. It means removing filler words, redundancies, and sticking to what's essential. In our tech context, this helps busy colleagues and clients grasp your point quickly without wading through unnecessary detail.</p>
 
@@ -806,7 +1081,7 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section" id="concreteness">
                 <h2>3. Concreteness — Concrete Communication</h2>
                 <p><strong>Definition:</strong> Concrete communication means your message is specific, tangible, and supported by evidence. It's the opposite of being vague. When you communicate concretely, the audience can visualize or understand exactly what you mean, because you've given details or examples to anchor your message. In technical work, this often means using data, examples, or clear descriptions rather than abstract statements.</p>
 
@@ -857,7 +1132,7 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section" id="exercise">
                 <h2>Exercise: Good vs. Bad Communication</h2>
                 <p><strong>Applying Clear, Concise, Concrete principles</strong></p>
 
@@ -885,7 +1160,7 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section" id="coherence">
                 <h2>4. Coherence — Coherent Communication</h2>
                 <p><strong>Definition:</strong> Coherent communication means that all parts of your message are logically connected and consistent. The message has a flow – it's well organized, and each point follows sensibly from the previous. Coherence also means your tone and information are consistent (no contradictions). Essentially, the audience should be able to follow your train of thought from start to finish.</p>
 
@@ -921,7 +1196,7 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section" id="correctness">
                 <h2>5. Correctness — Correct Communication</h2>
                 <p><strong>Definition:</strong> Correct communication means that the information you convey is accurate, error-free, and appropriate. This covers factual correctness (the content is true and up-to-date) and technical correctness (grammar, spelling, punctuation, and format). If a message isn't correct, it can mislead or distract the audience. As Indeed's article notes, "incorrect information can reduce your credibility" and errors will distract or erode trust. In tech, where details matter (version numbers, API endpoints, specifications), correctness is vital.</p>
 
@@ -976,7 +1251,7 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section" id="completeness">
                 <h2>6. Completeness — Complete Communication</h2>
                 <p><strong>Definition:</strong> Complete communication means your audience has all the information they need from your message, without needing to ask follow-up questions. It answers the basic questions (who, what, where, when, why, how) relevant to the topic. A complete message provides context, key details, and next steps so nothing essential is missing. If clarity is about being understood, completeness is about being thorough. This is arguably the most crucial 'C' in technical teamwork because missing information can cause errors, rework, or delays. We intentionally emphasize Complete because tech teams often suffer when details are left out.</p>
 
@@ -1026,7 +1301,7 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section" id="courtesy">
                 <h2>7. Courtesy — Courteous Communication</h2>
                 <p><strong>Definition:</strong> Courteous communication means communicating with respect, positivity, and empathy. It's about the tone and attitude of your message – being friendly and considerate of the recipient's feelings and perspectives. Even when delivering criticism or bad news, courteousness ensures professionalism. This also includes being mindful of cultural norms when working with international colleagues or clients (e.g., forms of address, level of directness, etc.). Essentially, treat the reader/listener as you would like to be treated, with politeness and consideration.</p>
 
@@ -1060,7 +1335,7 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section" id="improvement-plan">
                 <h2>Personal Communication Improvement Plan</h2>
                 <p>Now that you've learned the Seven Cs, it's time to create your personalized roadmap for improvement. Each participant should develop a customized plan focusing on practical application in their daily work.</p>
 
@@ -1159,7 +1434,7 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section" id="online-test">
                 <h2>Online Test Instructions 📝</h2>
                 <p>To evaluate your understanding of the course training, you are required to attempt the online test to validate your mastery of the Seven Cs of Communication.</p>
 
@@ -1241,7 +1516,7 @@
                 </div>
             </section>
 
-            <div class="takeaways">
+            <div class="takeaways" id="takeaways">
                 <h2>Practical Takeaways Summary</h2>
                 <div class="takeaway-grid">
                     <div class="takeaway-item">
@@ -1293,7 +1568,72 @@
     </button>
 
     <script>
-        // Show/hide scroll to top button
+        // Navigation functionality
+        function toggleNavigation() {
+            const sidebar = document.getElementById('navSidebar');
+            const body = document.body;
+            const isOpen = sidebar.classList.contains('open');
+
+            if (isOpen) {
+                sidebar.classList.remove('open');
+                body.classList.remove('nav-open');
+            } else {
+                sidebar.classList.add('open');
+                body.classList.add('nav-open');
+            }
+        }
+
+        // Check if we're on mobile/tablet and need toggle functionality
+        function isMobileView() {
+            return window.innerWidth <= 1200;
+        }
+
+        // Update active navigation link and progress
+        function updateNavigation() {
+            const sections = document.querySelectorAll('section[id], div[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const progressBar = document.getElementById('progressBar');
+
+            let currentSection = '';
+            let currentIndex = -1;
+
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100 && rect.bottom >= 100) {
+                    currentSection = section.id;
+                    currentIndex = index;
+                }
+            });
+
+            // Update active link
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Update progress bar
+            if (currentIndex >= 0 && sections.length > 0) {
+                const progress = ((currentIndex + 1) / sections.length) * 100;
+                progressBar.style.width = progress + '%';
+            }
+        }
+
+        // Close navigation when clicking outside (only on mobile)
+        document.addEventListener('click', function(e) {
+            if (!isMobileView()) return; // Don't close on desktop
+
+            const sidebar = document.getElementById('navSidebar');
+            const toggle = document.querySelector('.nav-toggle');
+
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+                document.body.classList.remove('nav-open');
+            }
+        });
+
+        // Show/hide scroll to top button and update navigation
         window.addEventListener('scroll', function() {
             const scrollButton = document.querySelector('.scroll-to-top');
             if (window.pageYOffset > 300) {
@@ -1301,6 +1641,9 @@
             } else {
                 scrollButton.classList.remove('visible');
             }
+
+            // Update navigation on scroll
+            updateNavigation();
         });
 
         // Smooth scroll to top
@@ -1317,8 +1660,17 @@
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
+                    // Close navigation after clicking a link (only on mobile)
+                    if (isMobileView()) {
+                        const sidebar = document.getElementById('navSidebar');
+                        sidebar.classList.remove('open');
+                        document.body.classList.remove('nav-open');
+                    }
+
+                    // Smooth scroll to target
                     target.scrollIntoView({
-                        behavior: 'smooth'
+                        behavior: 'smooth',
+                        block: 'start'
                     });
                 }
             });
@@ -1345,6 +1697,35 @@
             el.style.transform = 'translateY(20px)';
             el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             observer.observe(el);
+        });
+
+        // Initialize navigation on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavigation();
+        });
+
+        // Keyboard shortcut to toggle navigation (Ctrl/Cmd + /) - only on mobile
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === '/' && isMobileView()) {
+                e.preventDefault();
+                toggleNavigation();
+            }
+        });
+
+        // Handle window resize to manage sidebar state
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('navSidebar');
+
+            if (!isMobileView()) {
+                // Desktop view - ensure sidebar is always visible
+                sidebar.classList.remove('open', 'closed');
+                document.body.classList.remove('nav-open');
+            } else {
+                // Mobile view - ensure sidebar starts closed
+                if (!sidebar.classList.contains('open')) {
+                    sidebar.classList.add('closed');
+                }
+            }
         });
     </script>
 </body>
