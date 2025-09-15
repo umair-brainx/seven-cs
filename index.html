@@ -1621,7 +1621,8 @@
             return window.innerWidth <= 1200;
         }
 
-        // Update active navigation link and progress
+        let lastActiveNavLink = null;
+
         function updateNavigation() {
             const sections = document.querySelectorAll('section[id], div[id]');
             const navLinks = document.querySelectorAll('.nav-link');
@@ -1638,15 +1639,22 @@
                 }
             });
 
-            // Update active link
+            let newActive = null;
+
             navLinks.forEach(link => {
                 link.classList.remove('active');
                 if (link.getAttribute('href') === '#' + currentSection) {
                     link.classList.add('active');
+                    newActive = link;
                 }
             });
 
-            // Update progress bar
+            // Ensure the active link is visible in the sidebar
+            if (newActive && newActive !== lastActiveNavLink) {
+                newActive.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+                lastActiveNavLink = newActive;
+            }
+
             if (currentIndex >= 0 && sections.length > 0) {
                 const progress = ((currentIndex + 1) / sections.length) * 100;
                 progressBar.style.width = progress + '%';
